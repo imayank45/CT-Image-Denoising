@@ -19,6 +19,27 @@ if os.path.exists(MODEL_PATH):
 else:
     raise FileNotFoundError(f"Model file '{MODEL_PATH}' not found. Please check the path.")
 
+# Function to calculate SNR for original image
+def calculate_original_snr(image):
+    # Estimate signal as the mean of the image
+    signal = np.mean(image)
+    # Estimate noise as the standard deviation of the image
+    noise = np.std(image)
+    if noise == 0:
+        return float('inf')
+    # Return SNR in dB, scaled to avoid overly high values
+    return 10 * np.log10(signal / noise)
+
+# Function to calculate SNR for denoised image
+def calculate_denoised_snr(original, denoised):
+    # Signal power from the original image
+    signal_power = np.mean(original ** 2)
+    # Noise power as the mean squared difference between original and denoised
+    noise_power = np.mean((original - denoised) ** 2)
+    if noise_power == 0:
+        return float('inf')
+    return 10 * np.log10(signal_power / noise_power)
+
 # Function to load and preprocess image
 def load_image(file):
     ext = os.path.splitext(file.filename)[-1].lower()
@@ -59,8 +80,17 @@ def upload_image():
         return jsonify({"error": "No selected file"}), 400
     
     original_image = load_image(file)
+    # Calculate SNR for original image
+    original_snr = calculate_original_snr(original_image[..., 0])  # Use first channel
     original_base64 = image_to_base64(original_image)
-    return jsonify({"original_image": original_base64})
+    
+    # Store original image in memory for denoising comparison
+    app.config['original_image'] = original_image
+    
+    return jsonify({
+        "original_image": original_base64,
+        "original_snr": round(original_snr, 2) if original_snr != float('inf') else "∞"
+    })
 
 @app.route("/denoise", methods=["POST"])
 def denoise():
@@ -77,9 +107,20 @@ def denoise():
 
     # Denoise the image
     denoised_image = denoise_image(autoencoder, img)
+    
+    # Get the original image from app config
+    original_image = app.config.get('original_image')
+    if original_image is None:
+        return jsonify({"error": "Original image not found"}), 400
+    
+    # Calculate SNR for denoised image
+    denoised_snr = calculate_denoised_snr(original_image[..., 0], denoised_image[..., 0])  # Use first channel
     denoised_base64 = image_to_base64(denoised_image)
     
-    return jsonify({"denoised_image": denoised_base64})
+    return jsonify({
+        "denoised_image": denoised_base64,
+        "denoised_snr": round(denoised_snr, 2) if denoised_snr != float('inf') else "∞"
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)

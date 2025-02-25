@@ -179,90 +179,95 @@
   <!-- Image Modal -->
   <div id="imageModal" class="modal-overlay">
     <div class="modal-box">
-      <span class="close-button">×</span>
-      <div class="modal-content">
-        <!-- Original Image Section -->
-        <div class="modal-column">
-          <h3>Original Image</h3>
-          <img id="originalImage" src="" alt="Original">
+        <span class="close-button">×</span>
+        <div class="modal-content">
+            <!-- Original Image Section -->
+            <div class="modal-column">
+                <h3>Original Image</h3>
+                <img id="originalImage" src="" alt="Original">
+                <p id="originalSNR">SNR: N/A</p>
+            </div>
+            <!-- Denoise Action Section -->
+            <div class="modal-column button-column">
+                <button id="denoiseButton" class="btn btn-primary">Generate Denoised Image</button>
+            </div>
+            <!-- Denoised Image Section -->
+            <div class="modal-column">
+                <h3>Denoised Image</h3>
+                <img id="denoisedImage" src="" alt="Denoised">
+                <p id="denoisedSNR">SNR: N/A</p>
+            </div>
         </div>
-        <!-- Denoise Action Section -->
-        <div class="modal-column button-column">
-          <button id="denoiseButton" class="btn btn-primary">Generate Denoised Image</button>
-        </div>
-        <!-- Denoised Image Section -->
-        <div class="modal-column">
-          <h3>Denoised Image</h3>
-          <img id="denoisedImage" src="" alt="Denoised">
-        </div>
-      </div>
     </div>
   </div>
 
   <!-- JavaScript for Modal & Image Processing -->
   <script>
-    // Handle file upload
-    document.getElementById('imageUpload').addEventListener('change', function (event) {
+  // Handle file upload
+  document.getElementById('imageUpload').addEventListener('change', function (event) {
       const file = event.target.files[0];
       if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
+          const formData = new FormData();
+          formData.append('file', file);
 
-        fetch('/upload', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.error) {
-            alert(data.error);
-            return;
-          }
-          document.getElementById('originalImage').src = data.original_image;
-          document.getElementById('denoisedImage').src = ''; // Clear previous denoised image
-          document.getElementById('imageModal').style.display = 'flex';
-        })
-        .catch(error => console.error('Error:', error));
+          fetch('/upload', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.error) {
+                  alert(data.error);
+                  return;
+              }
+              document.getElementById('originalImage').src = data.original_image;
+              document.getElementById('originalSNR').textContent = `SNR: ${data.original_snr} dB`;
+              document.getElementById('denoisedImage').src = ''; // Clear previous denoised image
+              document.getElementById('denoisedSNR').textContent = 'SNR: N/A';
+              document.getElementById('imageModal').style.display = 'flex';
+          })
+          .catch(error => console.error('Error:', error));
       }
-    });
+  });
 
-    // Handle denoise button click
-    document.getElementById('denoiseButton').addEventListener('click', function () {
+  // Handle denoise button click
+  document.getElementById('denoiseButton').addEventListener('click', function () {
       const originalImageSrc = document.getElementById('originalImage').src;
       if (!originalImageSrc) {
-        alert('Please upload an image first.');
-        return;
+          alert('Please upload an image first.');
+          return;
       }
 
       fetch('/denoise', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ image: originalImageSrc })
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ image: originalImageSrc })
       })
       .then(response => response.json())
       .then(data => {
-        if (data.error) {
-          alert(data.error);
-          return;
-        }
-        document.getElementById('denoisedImage').src = data.denoised_image;
+          if (data.error) {
+              alert(data.error);
+              return;
+          }
+          document.getElementById('denoisedImage').src = data.denoised_image;
+          document.getElementById('denoisedSNR').textContent = `SNR: ${data.denoised_snr} dB`;
       })
       .catch(error => console.error('Error:', error));
-    });
+  });
 
-    // Close modal
-    document.querySelector('.close-button').addEventListener('click', function () {
+  // Close modal
+  document.querySelector('.close-button').addEventListener('click', function () {
       document.getElementById('imageModal').style.display = 'none';
-    });
+  });
 
-    document.getElementById('imageModal').addEventListener('click', function (e) {
+  document.getElementById('imageModal').addEventListener('click', function (e) {
       if (e.target === this) {
-        document.getElementById('imageModal').style.display = 'none';
+          document.getElementById('imageModal').style.display = 'none';
       }
-    });
-  </script>
+  });
+</script>
 
   <!-- Rest of your HTML remains unchanged -->
   <!-- About Start -->
