@@ -1,6 +1,6 @@
-Flask==2.3.2
-tensorflow==2.15.0  # Ensure compatibility with your autoencoder model; adjust if needed
-numpy==1.24.3
-opencv-python==4.7.0.72
-pydicom==2.4.3
-werkzeug==2.3.6
+Flask
+tensorflow
+numpy
+opencv-python
+pydicom
+werkzeug
