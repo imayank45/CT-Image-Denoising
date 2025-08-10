@@ -86,7 +86,6 @@ Here are sample screenshots from the results:
 
 
 
-*(Ensure you place your actual screenshot images in `static/screenshots/` directory for these links to work.)*  
 
 ---
 
