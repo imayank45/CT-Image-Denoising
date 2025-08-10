@@ -78,14 +78,13 @@ CT-Image-Denoising/
 
 ## 📷 Screenshots  
 
-Here are sample screenshots from the Flask UI and results:  
+Here are sample screenshots from the results:  
 
 
 ### 🔹 Noisy vs Denoised Image Comparison  
-![Image Comparison](static/screenshots/noisy_vs_denoised.png)  
+![Image Comparison](static/Picture1.png)  
 
-### 🔹 Tumor Detection Output  
-![Tumor Detection](static/screenshots/tumor_detection_result.png)  
+
 
 *(Ensure you place your actual screenshot images in `static/screenshots/` directory for these links to work.)*  
 
