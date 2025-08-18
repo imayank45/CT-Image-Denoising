@@ -37,31 +37,6 @@ CT-Image-Denoising/
 
 ---
 
-## 📈 Evaluation — Classification Reports  
-
-### 🖤 Noisy Image  
-| Class | Precision | Recall | F1-Score | Support |
-|-------|-----------|--------|----------|---------|
-| 0     | 0.50      | 0.50   | 0.50     | 4       |
-| 1     | 0.50      | 0.50   | 0.50     | 6       |
-| 2     | 0.00      | 0.00   | 0.00     | 4       |
-| 3     | 0.33      | 0.40   | 0.36     | 5       |
-| **Accuracy**   |           |        | **0.37** | **19** |
-| Macro Avg | 0.33 | 0.35   | 0.34     | 19      |
-| Weighted Avg | 0.35 | 0.37 | 0.36   | 19      |
-
----
-
-### 🤍 Denoised Image  
-| Class | Precision | Recall | F1-Score | Support |
-|-------|-----------|--------|----------|---------|
-| 0     | 1.00      | 0.75   | 0.86     | 4       |
-| 1     | 0.86      | 1.00   | 0.92     | 6       |
-| 2     | 0.75      | 0.75   | 0.75     | 4       |
-| 3     | 0.80      | 0.80   | 0.80     | 5       |
-| **Accuracy**   |           |        | **0.84** | **19** |
-| Macro Avg | 0.85 | 0.82   | 0.83     | 19      |
-| Weighted Avg | 0.85 | 0.84 | 0.84   | 19      |
 
 **Takeaway:** 📈 Accuracy improved **from 0.37 → 0.84** after denoising.  
 
